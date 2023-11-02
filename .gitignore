@@ -8,3 +8,4 @@
 **/stored_data
 *.p
 **/__pycache__
+**/dataset_reduced
