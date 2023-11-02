@@ -6,3 +6,5 @@
 *.sh
 *.yml
 **/stored_data
+*.p
+**/__pycache__
