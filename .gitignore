@@ -1,0 +1,8 @@
+*.csv
+*.wav
+**/checkpoints
+**/data
+*.json
+*.sh
+*.yml
+**/stored_data
