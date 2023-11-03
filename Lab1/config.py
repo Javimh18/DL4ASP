@@ -2,7 +2,7 @@ import math
 import os
 import pandas as pd
 
-workspace = "../"
+workspace = "./"
 
 # Dataset Paths
 weak = 'dataset/metadata/train/weak.tsv'
@@ -46,7 +46,7 @@ checkpoint_epochs = 1
 save_best = True
 
 file_path = os.path.abspath(os.path.dirname(__file__))
-classes = pd.read_csv(os.path.join(file_path, "..", validation), sep="\t").event_label.dropna().sort_values().unique()
+classes = pd.read_csv(os.path.join(file_path, validation), sep="\t").event_label.dropna().sort_values().unique()
 
 crnn_kwargs = {"n_in_channel": 1, "nclass": len(classes), "attention": True, "n_RNN_cell": 64,
                "n_layers_RNN": 2,
