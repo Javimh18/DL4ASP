@@ -9,3 +9,5 @@
 *.p
 **/__pycache__
 **/dataset_reduced
+**.DS_Store
+**/dataset
