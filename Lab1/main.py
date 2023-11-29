@@ -286,6 +286,7 @@ if __name__ == '__main__':
     # ##############
     crnn_kwargs = cfg.crnn_kwargs
     crnn = CRNN(**crnn_kwargs)
+    print(crnn)
     crnn_ema = CRNN(**crnn_kwargs)
 
     crnn.apply(weights_init)

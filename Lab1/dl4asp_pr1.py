@@ -35,7 +35,7 @@ def plot_waveform(segment):
     plt.grid()
     plt.xticks(fs*np.arange(1 + x_len_seconds), np.arange(1 + x_len_seconds))
     plt.title(segment)
-    plt.show()
+    plt.savefig(segment+"_waveform.png")
     
     return x, fs
 
@@ -52,7 +52,7 @@ def plot_melgram(segment):
     plt.xlabel('Time (seconds)')
     plt.xticks(len(mel)*np.arange(1 + np.floor(mel_len_seconds))/np.floor(mel_len_seconds), np.arange(1 + np.floor(mel_len_seconds)))
     plt.title(segment)
-    plt.show()
+    plt.savefig(segment+"_mel.png")
     
     return mel
     
@@ -111,6 +111,7 @@ def plot_predictions(segment, predfile):
     ax.invert_yaxis()
     
     ax.set_title(segment +' (predictions)')
+    plt.savefig('predictions.png')
 
 
 def plot_labels_predictions(segment, predfile):
@@ -147,6 +148,7 @@ def plot_labels_predictions(segment, predfile):
     ax.invert_yaxis()
     
     ax.set_title(segment +' (ground truth + predictions)')
+    plt.savefig('gt_predictions.png')
 
 
 
