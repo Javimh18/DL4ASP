@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-scores_file = 'exps/test/result/scores_test.txt' # Modify to point at your scores file 
+scores_file = 'exps/model_of_choice_small_triplet/result/scores_test.txt' # Modify to point at your scores file 
 keys_file = 'lists/veri_test.txt'
 
 all_scores = np.loadtxt(scores_file, usecols=[0])
@@ -20,6 +20,7 @@ plt.hist(nontarget_scores, alpha=0.7)
 
 plt.xlabel('score')
 plt.legend(('target','non target')) 
+plt.title('Non-target vs target histograms (Own small conf)')
 plt.show()
 
 
