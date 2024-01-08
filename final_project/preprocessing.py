@@ -87,13 +87,15 @@ class Saver:
     Responsible to save features and the min max values of the log_spectrogram
     """
 
-    def __init__(self, feature_save_dir, save_min_max_values_save_dir) -> None:
+    def __init__(self, feature_save_dir, save_min_max_values_save_dir):
         self.feature_save_dir = feature_save_dir
         self.save_min_max_values_save_dir = save_min_max_values_save_dir
     
     def save_feature(self, norm_feature, file_path):
         save_path = self._generate_save_path(file_path)
+        file_name = os.path.split(save_path)[1]
         np.save(save_path, norm_feature)
+        return file_name
         
     def save_min_max_values(self, min_max_values):
         save_path = os.path.join(self.save_min_max_values_save_dir, "min_max_values.pkl")
@@ -101,7 +103,7 @@ class Saver:
         
     def _generate_save_path(self, file_path):
         file_name = os.path.split(file_path)[1]
-        save_path = os.path.join(self.feature_save_dir, + file_name + ".npy")
+        save_path = os.path.join(self.feature_save_dir, file_name + ".npy")
         return save_path
     
     @staticmethod
@@ -208,7 +210,7 @@ if __name__ == "__main__":
     idx_train_test_split = math.floor(TOP_SAMPLE*SPLIT_TEST_TRAIN)
     for s in list_of_spectrograms:
         path_spectrogram = os.path.join(SPECTROGRAMES_SAVE_DIR, s)
-        idx_sample = int(s.split("_")[3].split('.')[0])
+        idx_sample = int(s.split("_")[2].split('.')[0])
         if idx_sample < idx_train_test_split:
             train_path = os.path.join(SPECTROGRAMES_SAVE_DIR, "train")
             if not os.path.exists(train_path):
@@ -226,7 +228,7 @@ if __name__ == "__main__":
     idx_train_val_split = math.floor(idx_train_test_split*SPLIT_TEST_TRAIN)
     for s in list_of_spectrograms:
         path_spectrogram = os.path.join(train_path, s)
-        idx_sample = int(s.split("_")[3].split('.')[0])
+        idx_sample = int(s.split("_")[2].split('.')[0])
         if idx_sample > idx_train_val_split:
             val_path = os.path.join(SPECTROGRAMES_SAVE_DIR, "val")
             if not os.path.exists(val_path):
