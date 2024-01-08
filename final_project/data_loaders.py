@@ -12,6 +12,7 @@ class FSSDDataLoader(DataLoader):
         self.shuffle = shuffle
         self.batch_idx = 0
         self.n_samples = len(dataset)
+        self.subset = dataset.subset
         
         self.init_kwargs = {
             'dataset': dataset,
@@ -21,6 +22,9 @@ class FSSDDataLoader(DataLoader):
             'num_workers': num_workers
         }
         idx_full = np.arange(self.n_samples)
-        self.sampler = RandomSampler(idx_full)
+        if shuffle != True:
+            self.sampler = RandomSampler(idx_full)
+        else:
+            self.sampler = None
         
         super(FSSDDataLoader, self).__init__(sampler=self.sampler, **self.init_kwargs)
