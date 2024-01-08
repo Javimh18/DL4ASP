@@ -130,7 +130,7 @@ class VAETrainer:
         total_recon = 0.0
         total_kl = 0.0
         
-        for (_, data) in tqdm(self.train_data_loader):
+        for (_, data, _) in tqdm(self.train_data_loader):
             x = data.type('torch.FloatTensor').to(self.device)
             x = self._reshape(x)
             
@@ -162,7 +162,7 @@ class VAETrainer:
         total_val_kl = 0.0    
         
         with torch.no_grad():
-            for batch_idx, (_, data) in enumerate(self.valid_data_loader):
+            for batch_idx, (_, data, _) in enumerate(self.valid_data_loader):
                 x = data.type('torch.FloatTensor').to(self.device)
                 x = self._reshape(x)
 
