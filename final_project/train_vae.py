@@ -8,7 +8,7 @@ from torch.utils.data.dataloader import default_collate
 import os
 
 if __name__ == '__main__':
-    log_spectrogram1 = np.load('./data/real/spectrograms/train/real_0_george_0.wav.npy')
+    log_spectrogram1 = np.load('./data/real/spectrograms/train/0_george_0.wav.npy')
     n_freq_bins, n_frames = log_spectrogram1.shape[1],log_spectrogram1.shape[0]
     model = VAEAudio(input_size=(1, n_freq_bins, n_frames),
                      latent_dim=128,
@@ -26,8 +26,8 @@ if __name__ == '__main__':
     betas = (0.95, 0.999)
     
     # instanciate datasets
-    train_dataset = VAEDataset(path_to_dataset='./data/real/spectrograms/', extension=['.npy'], subset='train')
-    val_dataset = VAEDataset(path_to_dataset='./data/real/spectrograms/', extension=['.npy'], subset='val')
+    train_dataset = VAEDataset(path_to_dataset='./data/real/', extension=['.npy'], subset='train')
+    val_dataset = VAEDataset(path_to_dataset='./data/real/', extension=['.npy'], subset='val')
     
     # instanciate dataloaders
     train_dataloader = DataLoader(dataset=train_dataset, 
