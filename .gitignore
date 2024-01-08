@@ -12,3 +12,7 @@
 **.DS_Store
 **/dataset
 *.log
+**/models
+*.pth
+*.pt
+**/exps
