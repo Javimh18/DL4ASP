@@ -2,7 +2,7 @@ import numpy as np
 from torch.optim import Adamax
 from trainers import VAETrainer
 from vae import VAEAudio
-from torch.utils.data import DataLoader
+from data_loaders import FSSDDataLoader
 from dataset import VAEDataset
 from torch.utils.data.dataloader import default_collate
 import os
@@ -30,13 +30,13 @@ if __name__ == '__main__':
     val_dataset = VAEDataset(path_to_dataset='./data/real/', extension=['.npy'], subset='val')
     
     # instanciate dataloaders
-    train_dataloader = DataLoader(dataset=train_dataset, 
+    train_dataloader = FSSDDataLoader(dataset=train_dataset, 
                                   batch_size=128, 
                                   shuffle=True, 
                                   num_workers=os.cpu_count(),
                                   collate_fn=default_collate)
     
-    val_dataloader = DataLoader(dataset=val_dataset, 
+    val_dataloader = FSSDDataLoader(dataset=val_dataset, 
                                 batch_size=128, 
                                 shuffle=True, 
                                 num_workers=os.cpu_count(),

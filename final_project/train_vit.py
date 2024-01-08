@@ -2,13 +2,13 @@ import numpy as np
 from torch.optim import Adamax
 from trainers import ViTTrainer
 from vit import ViT
-from torch.utils.data import DataLoader, RandomSampler
+from data_loaders import FSSDDataLoader
 from dataset import SynthDataset
 from torch.utils.data.dataloader import default_collate
 import os
 
 if __name__ == '__main__':
-    log_spectrogram1 = np.load('./data/real/spectrograms/train/real_0_george_0.wav.npy')
+    log_spectrogram1 = np.load('./data/real/spectrograms/train/0_george_0.wav.npy')
     n_freq_bins, n_frames = log_spectrogram1.shape[1],log_spectrogram1.shape[0]
     
     model = ViT(img_size=(n_freq_bins, n_frames),
@@ -31,13 +31,13 @@ if __name__ == '__main__':
     val_dataset = SynthDataset(path_to_dataset='./data', extension=['.npy'], subset='val')
     
     # instanciate dataloaders
-    train_dataloader = DataLoader(dataset=train_dataset, 
+    train_dataloader = FSSDDataLoader(dataset=train_dataset, 
                                   batch_size=batch_size, 
                                   shuffle=True, 
                                   num_workers=os.cpu_count(),
                                   collate_fn=default_collate)
     
-    val_dataloader = DataLoader(dataset=val_dataset, 
+    val_dataloader = FSSDDataLoader(dataset=val_dataset, 
                                 batch_size=batch_size, 
                                 shuffle=True, 
                                 num_workers=os.cpu_count(),
