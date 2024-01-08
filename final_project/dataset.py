@@ -54,13 +54,15 @@ class VAEDataset(Dataset):
         with open(path_to_min_max_dict, "rb") as f:
             min_max_values = pickle.load(f)
             min_max_for_spectrogram = min_max_values[self.file_names[idx]]
+            max_value, min_value = torch.tensor(min_max_for_spectrogram['max']),\
+                                   torch.tensor(min_max_for_spectrogram['min'])
         
         # load the spectrogram
         log_spectrogram = np.load(file_name)
         if self.transform: 
             log_spectrogram = ToTensor()(log_spectrogram)
         
-        return idx, log_spectrogram, min_max_for_spectrogram
+        return idx, log_spectrogram, (max_value, min_value)
     
 class SynthDataset(Dataset):
     def __init__(self, path_to_dataset, extension=['wav', 'mp3', 'npy', 'pth'], type_of_data = 'spectrograms',subset=None, transform=ToTensor()) -> None:
