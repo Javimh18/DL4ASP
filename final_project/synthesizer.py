@@ -2,7 +2,7 @@ import torch
 from preprocessing import MinMaxNormaliser
 import librosa
 from tqdm import tqdm
-
+import numpy as np
 def reshape(x):
         n_freqBand, n_contextWin = x.size(2), x.size(1)
         return x.view(-1, 1, n_freqBand, n_contextWin)  
@@ -29,24 +29,30 @@ class Synthesizer():
                 x = data.type('torch.FloatTensor').to(device)
                 x = reshape(x)
                 
-                signals, z, idx = self.synthesize(x, max_values, min_values, idx)
-                signals_z_list.append((signals, z, idx))
+                generated_spectrograms, signals, z, idx = self.synthesize(x, max_values, min_values, idx)
+                signals_z_list.append((generated_spectrograms, signals, z, idx))
                 
         return signals_z_list
                                                          
     def synthesize(self, spectrograms, min_values, max_values, idx):
         generated_spectrograms, _, _, z_s = self.vae(spectrograms)
         
-        # B, C, freq_bins, n_frames -> B, freq_bins, n_frames, C
-        generated_spectrograms = generated_spectrograms.permute(0,2,3,1)
-        # convert latent space z_s tensors to numpy arrays. They share the
+        # convert latent output tensors to numpy arrays. They share the
         # same memory space, so be careful with modifications, if a value
         # is changed in the numpy array, the torch tensor will be affected by it
-        z_s_np = z_s.cpu().numpy()
-        idx = idx.cpu().numpy()
+        out_generated_spectrograms_np = generated_spectrograms.detach()\
+                                                              .squeeze()\
+                                                              .cpu()\
+                                                              .numpy()
+        z_s_np = z_s.detach().cpu().numpy()
+        idx_np = idx.detach().unsqueeze(-1).cpu().numpy()
+        
+        # B, C, freq_bins, n_frames -> B, freq_bins, n_frames, C
+        generated_spectrograms = generated_spectrograms.permute(0,2,3,1)
+        
         # convert spectrograms to signals
         signals = self.reconvert_spectrograms_to_audio(generated_spectrograms, min_values, max_values)
-        return signals, z_s_np, idx
+        return out_generated_spectrograms_np, signals, z_s_np, idx_np
     
     def reconvert_spectrograms_to_audio(self, spectrograms, min_values, max_values):
         # convert spectrogram and min_max_values to numpy ndarray
@@ -71,6 +77,7 @@ class Synthesizer():
             # add it to the list of putput signals
             signals.append(signal)
 
+        signals = np.stack(signals)
         return signals
     
             

@@ -72,21 +72,28 @@ if __name__ == '__main__':
     dataloaders = [train_dataloader, val_dataloader, test_dataloader]
     
     # iterate through all the subsets to obtain the signals
-    all_signals = {}
-    signals_data = np.array([])
-    z_s_data = np.array([])
-    idx_s_data = np.array([])
+    gen_spectrograms_data = []
+    signals_data = []
+    z_s_data = []
+    idx_s_data = []
     for dl in dataloaders:
         print(f"Extrating the generated signals for the {dl.subset} subset.")
         signals_metadata = synth.get_signals_from_spectrograms(dl, device)
         
         # unpack metada from the subset we are processing
-        for signals, z_s, idx_s in signals_metadata:
-            signals_data += signals
-            z_s_data += z_s
-            idx_s_data += idx_s
+        for gen_spectrograms, signals, z_s, idx_s in signals_metadata:
+            gen_spectrograms_data.append(gen_spectrograms)
+            signals_data.append(signals)
+            print(signals.shape, z_s.shape, idx_s.shape)
+            z_s_data.append(z_s)
+            idx_s_data.append(idx_s)
+            
+    gen_spectrograms_data = np.vstack(gen_spectrograms_data)
+    signals_data = np.vstack(signals_data)
+    z_s_data = np.vstack(z_s_data)
+    idx_s_data = np.vstack(idx_s_data)
         
-    np.array(signals_data).shape
+
         
         
     
