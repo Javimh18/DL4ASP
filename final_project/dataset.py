@@ -5,6 +5,7 @@ from torch.utils.data import Dataset
 import torch
 from torchvision import transforms
 import numpy as np
+import pickle
 
 class ToTensor(object):
     """
@@ -22,16 +23,17 @@ class VAEDataset(Dataset):
         self.subset = subset
         self.file_names = []
         self.transform = transform
+        self.data_type = 'spectrograms'
         
         # load different splits from the original dataset
         if self.subset == 'train':
-            train_path = os.path.join(path_to_dataset, self.subset)
+            train_path = os.path.join(path_to_dataset, self.data_type, self.subset)
             self.file_names = os.listdir(train_path)
         elif self.subset == 'val':
-            val_path = os.path.join(path_to_dataset, self.subset)
+            val_path = os.path.join(path_to_dataset, self.data_type, self.subset)
             self.file_names = os.listdir(val_path)
         elif self.subset == 'test':
-            test_path = os.path.join(path_to_dataset, self.subset)
+            test_path = os.path.join(path_to_dataset, self.data_type, self.subset)
             self.file_names = os.listdir(test_path)
             
     def __len__(self):
@@ -40,17 +42,25 @@ class VAEDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-            
+        
+        # get the file name of the spectrogram to load
         file_name = os.path.join(self.path_to_dataset, 
+                                 self.data_type,
                                  self.subset,
                                  self.file_names[idx])
         
-        log_spectrogram = np.load(file_name)
+        # load max_min dictionary for the spectrogram (for denormalizing purposes in post processing)
+        path_to_min_max_dict = os.path.join(self.path_to_dataset, 'min_max_values.pkl')
+        with open(path_to_min_max_dict, "rb") as f:
+            min_max_values = pickle.load(f)
+            min_max_for_spectrogram = min_max_values[self.file_names[idx]]
         
+        # load the spectrogram
+        log_spectrogram = np.load(file_name)
         if self.transform: 
             log_spectrogram = ToTensor()(log_spectrogram)
         
-        return idx, log_spectrogram
+        return idx, log_spectrogram, min_max_for_spectrogram
     
 class SynthDataset(Dataset):
     def __init__(self, path_to_dataset, extension=['wav', 'mp3', 'npy', 'pth'], type_of_data = 'spectrograms',subset=None, transform=ToTensor()) -> None:
